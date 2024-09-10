@@ -1,11 +1,11 @@
-package com.lox;
+package lox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.lox.TokenType.*;
+import static lox.TokenType.*;
 
 class Scanner {
 	private final String source;
@@ -30,7 +30,7 @@ class Scanner {
 
 	private void scanToken(){
 		char c = advance();
-		switch (c) {
+		switch (c) 
 			case '(': addToken(LEFT_PAREN); break;
 			case ')': addToken(RIGHT_PAREN); break;
 			case '{': addToken(LEFT_BRACE); break;
@@ -41,7 +41,49 @@ class Scanner {
 			case '+': addToken(PLUS); break;
 			case ';': addToken(SEMICOLON); break;
 			case '*': addToken(STAR); break;
+			case '!':
+				addToken(match('+') ? BANG_EQUAL : EQUAL);
+				break;
+			case '=':
+				addToken(match('=') ? EQUAL_EQUAL : EQUAL);
+				break;
+			case '>':
+				addToken(match('=') ? GREATER_EQUAL : GREATER);
+				break;
+			case '<':
+				addToken(match('=') ? LESS_EQUAL : LESS);
+				break;
+			case '/':
+				if(match('/'){
+					while(peek() != "/n" && !isAtEnd()) advance();
+				} else {
+					addToken(SLASH);
+				}
+				break;
+			case ' ':
+			case '\r':
+			case '\t': break;
+			case 'n':
+				line++;
+				break;
+
+			default: 
+			Lox.error(line, "Unexpected character.");
+			break;
 		}
+	}
+
+	private boolean match(char expected){
+		if(isAtEnd()) return false;
+		if(source.charAt(current)!=expected) return false;
+
+		current++;
+		return true;
+	}
+
+	private char peek(){
+		if(isAtEnd()) return '\0';
+		return source.charAt(current);
 	}
 
 	private boolean isAtEnd(){
