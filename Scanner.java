@@ -42,7 +42,7 @@ class Scanner {
 			case ';': addToken(SEMICOLON); break;
 			case '*': addToken(STAR); break;
 			case '!':
-				addToken(match('+') ? BANG_EQUAL : EQUAL);
+				addToken(match('=') ? BANG_EQUAL : EQUAL);
 				break;
 			case '=':
 				addToken(match('=') ? EQUAL_EQUAL : EQUAL);
